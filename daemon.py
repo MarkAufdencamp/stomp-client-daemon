@@ -40,7 +40,7 @@ send_msg_types  = {"TSU": "Task Status Update, Message contains Task Notificatio
 #                       "TSQ": Task.statusQuery,
 #                       "TSU": Task.statusUpdate}
 
-stompConn = stomp.Connection()
+global stompConn
 msgSrvr="localhost"
 msgSrvrPort=61613
 msgSrvrQueue="/queue/localhost"
@@ -224,9 +224,9 @@ def stompSubscribe(stompConn, msgSrvrQueue):
 
 def stompUnsubscribe(stompConn, msgSrvrQueue):
     # Unsubscribe to the configured message queue
-    sys.stdout.write('Unsubscribing to message queue - {0} - {1}\n'.format(msgSrvrQueue, time.ctime()))
+    sys.stdout.write('Unsubscribing from message queue - {0} - {1}\n'.format(msgSrvrQueue, time.ctime()))
     try:
-        stompConn.unsubscribe(destination=msgSrvrQueue)
+        stompConn.unsubscribe(id=msgSrvrQueue)
     except Exception:
         print("Message Queue Unsubscribe Error")
         
