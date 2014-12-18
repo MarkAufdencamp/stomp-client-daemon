@@ -7,6 +7,7 @@ import atexit
 import signal
 import time
 import queue
+import socket
 from concurrent.futures import ThreadPoolExecutor
 # PyPi Packages
 # pip -r requirements.txt
@@ -30,10 +31,10 @@ threadPoolCount = 16
 threadPool = ThreadPoolExecutor(threadPoolCount)
 
 # Valid Provisioning Task Messages
-recv_msg_types = {"TN": "Task Notification, Message contains Task Retrieval URL",
-                  "TSQ": "Task Status Query, Message contains Task Notification Message Id"}
+recv_msg_types = {"TN": "Task Notification Message Type, Message Id key, Message contains Task Retrieval URL",
+                  "TSQ": "Task Status Query Message Type, Message Id key, Message contains Task Notification Message Id"}
 
-send_msg_types  = {"TSU": "Task Status Update, Message contains Task Notification Message Id, Task Sate"}
+send_msg_types  = {"TSU": "Task Status Update Message Type, Message Id key, Message contains Task Notification Message Id, Task State"}
 
 # Processors for valid recv_msg_types
 #msg_type_processors = {"TN": Task.notification,
@@ -44,6 +45,7 @@ global stompConn
 msgSrvr="localhost"
 msgSrvrPort=61613
 msgSrvrQueue="/queue/localhost"
+
 
 # Inner Class for Stomp Message Handling
 class DaemonStompListener(ConnectionListener):
@@ -57,13 +59,9 @@ class DaemonStompListener(ConnectionListener):
     # Maybe this should fail gracefully without retry and the main daemon loop should test onnectivity on wakeup from sleep
     def on_disconnected(self):
         print('Agent Disconnected')
-        print('Attempting to reconnect')
-        stompConn.start()
-        stompConn.connect(wait=True)
-        stompConn.subscribe(destination=msgSrvrQueue, ack='auto', headers=HEADERS)          
     
     def on_heartbeat_timeout(self):
-        print("Heartbeat Timeout")
+        print("Agent Heartbeat Timeout")
 
     # Invoking print() causes a thread exception  
 #    def on_before_message(self, headers, body):
@@ -78,7 +76,7 @@ class DaemonStompListener(ConnectionListener):
         threadPool.submit(self.errHandler, headers, body)
 
     def on_receipt(self, headers, body):
-        print('Agent Receipt Received - {} - {}'.format(headers['message-id'], time.ctime()))
+        print('Agent Receipt Received - {0} - {1}'.format(headers['message-id'], time.ctime()))
         threadPool.submit(self.receiptHandler, headers, body)
         
     # Invoking print() breaks daemon shutdown sequence error
@@ -86,7 +84,7 @@ class DaemonStompListener(ConnectionListener):
 #        print("Send")
     
     def on_heartbeat(self):
-        print("Heartbeat")
+        print("Agent Heartbeat Received")
         
     def msgHandler(self, headers, body):
         print('Message process begin - {0} - {1}'.format(headers['message-id'], time.ctime()))       
@@ -190,12 +188,17 @@ def parseConfig(config):
     except KeyError:
         print("Error loading msgSrvrQueue from config.json - Utilizing default - '/queue/localhost'")
     
+def validateConfig(config):
+    hostname = socket.gethostbyaddr(socket.gethostname())[0]
+    ip_addresses = socket.gethostbyname_ex(socket.gethostname())[2]
+
+    
 def stompConnect(msgSrvr, msgSrvrPort):
     # Connect via Stomp to the Message Server
     # Factory Stomp connection
     sys.stdout.write('Connecting to message server - {0}:{1} - {2}\n'.format(msgSrvr, msgSrvrPort, time.ctime()))
     global stompConn
-    stompConn = stomp.Connection( host_and_ports=[(msgSrvr, msgSrvrPort)] )
+    stompConn = stomp.Connection( host_and_ports=[(msgSrvr, msgSrvrPort)], heartbeats=(60000, 20000) )
     stompConn.set_listener('DaemonStompListener',DaemonStompListener())
     try:
         stompConn.start()
@@ -247,7 +250,20 @@ def main():
     # Endless Loop until sigterm
     while True:
 #       sys.stdout.write('Daemon Alive! {}\n'.format(time.ctime()))
-       time.sleep(10)
+        time.sleep(60)
+        if stompConn.is_connected():
+           print('Agent Connected when daemon wokeup')
+        else:
+            print('Agent Disconnected when daemon wokeup')
+            print('Attempting to reconnect')
+            try:
+                stompConn.start()
+                stompConn.connect()
+                stompConn.subscribe(destination=msgSrvrQueue, ack='auto', headers=HEADERS)
+            except Exception:
+                print('Agent Reconnect Failed when daemon wokeup')
+#            stompConn.connect(wait=True)
+#       stompConn.subscribe(destination=msgSrvrQueue, ack='auto', headers=HEADERS)          
 
                     
 if __name__ == '__main__':
