@@ -1,0 +1,71 @@
+# Install pip if necessary:
+#	sudo easy_install pip
+#
+# Imstall PyPi packages::
+#	sudo pip install -r requirements.txt --upgrade
+#
+# Virtual Environment install if necessary:
+#  pyenv
+#
+#  Install pyenv:
+#	sudo pip install virtualenv
+#	sudo pip install virtualenvwrapper
+#	git clone git://github.com/yyuu/pyenv.git ~/.pyenv
+#	git clone git://github.com/yyuu/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
+#	git clone git://github.com/yyuu/pyenv-virtualenvwrapper.git ~/.pyenv/plugins/pyenv-virtualenvwrapper
+#	nano ~/.profile
+#		export PATH=$HOME/.pyenv/bin:$PATH
+#		eval "$(pyenv init - )"
+#
+#  Install python 3:
+#	pyenv install 3.3.2
+#	pyenv rehash
+#
+#  Create and Use Virtual Environment:
+#	pyenv local 3.3.2
+#	pyenv virtualenv stomp-daemon
+#	pyenv local stomp-daemon
+#
+# Run Daemon:
+#	./daemon.py start
+#	./daemon.py stop
+#	tail -f /tmp/daemon.log
+#	rm /tmp/daemon.log
+#	cat /tmp/daemon.pid
+#
+# Run Daemon from sys v init script:
+#	
+#
+# Native Library Dependencies:
+#	
+#
+# Configuration:
+#	msgSrvr - "localhost" - ActiveMQ Stomp Message Server
+#	msgSrvrPort - 61613 - ActiveMQ Stomp Message Server Connector Port
+#	msgSrvrQueue - "/queue/localhost" - ActiveMQ Stomp Message Server Queue (Daemon Agent Hostname)
+# 
+# Create config.json file:
+#	python
+#	>> import json
+#	>> json.dump({"msgSrvr": "inet-srvr-02.iluviya.net", "msgSrvrPort": 61613, "msgSrvrQueue": "macbook-pro-1tb.iluviya.local"},open('config.json,'w'))
+#	>> quit()
+#
+# Stomp CLI Testing:
+#	stomp -H localhost -P 61613
+#	>> subscribe /queue/localhost
+#	>> send /queue/localhost hello world
+#	>> help
+#
+# Run ActiveMQ
+#	wget -O http://apache.tradebit.com/pub/activemq/5.10.0/apache-activemq-5.10.0-bin.tar.gz
+#	tar xzvf apache-activemq-5.10.0-bin.tar.gz
+#	cd apache-activemq-5.10.0/
+#	bin/activemq start xbean:conf/activemq.xml
+#	bin/activemq stop
+#
+#	tail data/activemq.log
+#
+# ActiveMQ console
+#	http:/localhost:8161
+#
+#################################################
