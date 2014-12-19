@@ -198,8 +198,11 @@ def stompConnect(msgSrvr, msgSrvrPort):
     # Factory Stomp connection
     sys.stdout.write('Connecting to message server - {0}:{1} - {2}\n'.format(msgSrvr, msgSrvrPort, time.ctime()))
     global stompConn
-    stompConn = stomp.Connection( host_and_ports=[(msgSrvr, msgSrvrPort)], heartbeats=(60000, 20000) )
-    stompConn.set_listener('DaemonStompListener',DaemonStompListener())
+    try:
+        stompConn = stomp.Connection( host_and_ports=[(msgSrvr, msgSrvrPort)], heartbeats=(60000, 20000) )
+        stompConn.set_listener('DaemonStompListener',DaemonStompListener())
+    except Exception:
+        print('Message Server Connection Error')
     try:
         stompConn.start()
     except Exception:
@@ -255,13 +258,13 @@ def main():
            print('Agent Connected when daemon wokeup')
         else:
             print('Agent Disconnected when daemon wokeup')
+            print('Removing Listener')
+            stompConn.remove_listener('DaemonStompListener')
             print('Attempting to reconnect')
-            try:
-                stompConn.start()
-                stompConn.connect()
-                stompConn.subscribe(destination=msgSrvrQueue, ack='auto', headers=HEADERS)
-            except Exception:
-                print('Agent Reconnect Failed when daemon wokeup')
+            stompDisconnect(stompConn)
+            stompConnect(msgSrvr, msgSrvrPort)
+            print('Attempting to resubscribe')
+            stompSubscribe(stompConn, msgSrvrQueue)
 #            stompConn.connect(wait=True)
 #       stompConn.subscribe(destination=msgSrvrQueue, ack='auto', headers=HEADERS)          
 
