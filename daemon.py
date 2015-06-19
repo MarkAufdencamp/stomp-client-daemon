@@ -15,6 +15,9 @@ import stomp
 from stomp import ConnectionListener
 import json
 
+from stomp_message_controller import StompMessageController
+from stomp_message_processor import StompMessageProcessor
+
 # main()->parseConfig() defines msgSrvr, msgSrvrPort, and msgSrvrQueue as global
 # main() defines stompConn as global - allows acces to cleanly close connection on sigterm
 
@@ -25,6 +28,7 @@ import json
 #
 # Load the configuration file
 config = json.load(open('config.json'))
+app_dir = os.path.abspath(os.path.dirname(sys.argv[0]))
 
 # Create a Thread Pool for Provisioning Tasks
 threadPoolCount = 16
@@ -46,7 +50,44 @@ msgSrvr="localhost"
 msgSrvrPort=61613
 msgSrvrQueue="/queue/localhost"
 
+global message_processors
 
+
+def loadControllers():
+    global message_processors
+    message_processors = {}
+    print("Application Dir - " + app_dir)
+
+    #TODO: Factory StompMessageProcessors and respective StompMessageControllers
+
+    global stomp_message_controllers
+    controller_dir = "stomp_message_controllers"
+    stomp_message_controllers = StompMessageProcessor(controller_dir)
+    message_processors['stomp_message_controllers'] = stomp_message_controllers
+
+    global virtual_host_management_controllers
+    controller_dir = "virtual_host_management_controllers"
+    virtual_host_management_controllers = StompMessageProcessor(controller_dir)
+    message_processors['virtual_host_management_controllers'] = virtual_host_management_controllers
+
+    global virtual_mail_management_controllers
+    controller_dir = "virtual_mail_management_controllers"
+    virtual_mail_management_controllers = StompMessageProcessor(controller_dir)
+    message_processors['virtual_mail_management_controllers'] = virtual_mail_management_controllers
+
+loadControllers()
+
+def buildRoutes():
+    #TODO: Factory Stomp message routing table from processor routes
+    print("Build Routes")
+
+def printRoutes():
+    print("Print Routes")
+    for key in message_processors:
+         print( key, message_processors[key])
+         processor = message_processors[key]
+         processor.print_routes()
+    
 # Inner Class for Stomp Message Handling
 class DaemonStompListener(ConnectionListener):
     def on_connecting(self, host_and_port):
@@ -55,8 +96,6 @@ class DaemonStompListener(ConnectionListener):
     def on_connected(self, headers, body):
         print("Agent Connected")
         
-    # The retry eventually breaks the stack
-    # Maybe this should fail gracefully without retry and the main daemon loop should test onnectivity on wakeup from sleep
     def on_disconnected(self):
         print('Agent Disconnected')
     
@@ -192,12 +231,12 @@ def validateConfig(config):
     hostname = socket.gethostbyaddr(socket.gethostname())[0]
     ip_addresses = socket.gethostbyname_ex(socket.gethostname())[2]
 
-    
 def stompConnect(msgSrvr, msgSrvrPort):
     # Connect via Stomp to the Message Server
     # Factory Stomp connection
     sys.stdout.write('Connecting to message server - {0}:{1} - {2}\n'.format(msgSrvr, msgSrvrPort, time.ctime()))
     global stompConn
+    
     try:
         stompConn = stomp.Connection( host_and_ports=[(msgSrvr, msgSrvrPort)], heartbeats=(60000, 20000) )
         stompConn.set_listener('DaemonStompListener',DaemonStompListener())
@@ -208,7 +247,7 @@ def stompConnect(msgSrvr, msgSrvrPort):
     except Exception:
         print('Message Server Start Error')
     try:
-        stompConn.connect()
+        stompConn.connect(headers={'client-id': "macbook-pro-1tb.iluviya.local"})
     except Exception:
         print('Message Server Connect Error')
  
@@ -240,16 +279,25 @@ def main():
     sys.stdout.write('Daemon started with pid - {0} - {1}\n'.format(os.getpid(), time.ctime()))
     # Parse configuration values - creates global msgSrvr, msgSrvrPort, and msgSrvrQueue
     parseConfig(config)
+
+    # Build Routes
+    buildRoutes()
+
+    # Print Routes
+    printRoutes()
+
     # Declare stompConn global - allows the sigterm_handler to access and close the connection
     # Factory the Stomp Connection
     # Currently StompConnection11 class default
     # StompConnection12 possible but may not be implemented for all platforms
     # Python Stomp version matching ActiveMQ/Stomp, Rails ActiveMessaging/Stomp, Java JMS/Stomp, WebSockets/Stomp
     stompConnect(msgSrvr, msgSrvrPort)
+
     # Subscribe to the message queue
     stompSubscribe(stompConn, msgSrvrQueue)
+
     # Send the CLI start message to itself
-#    stompConn.send(body=' '.join(sys.argv[1:]), destination=msgSrvrQueue)
+    #    stompConn.send(body=' '.join(sys.argv[1:]), destination=msgSrvrQueue)
     # Endless Loop until sigterm
     while True:
 #       sys.stdout.write('Daemon Alive! {}\n'.format(time.ctime()))
