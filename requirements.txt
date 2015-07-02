@@ -3,3 +3,4 @@ virtualenvwrapper
 #
 stomp
 #
+inflection
