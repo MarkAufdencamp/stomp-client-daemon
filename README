@@ -47,7 +47,7 @@
 # Create config.json file:
 #	python
 #	>> import json
-#	>> json.dump({"msgSrvr": "inet-srvr-02.iluviya.net", "msgSrvrPort": 61613, "msgSrvrQueue": "macbook-pro-1tb.iluviya.local"},open('config.json,'w'))
+#	>> json.dump({"msgSrvr": "inet-srvr-02.iluviya.net", "msgSrvrPort": 61613, "msgSrvrQueue": "\queue\macbook-pro-1tb.iluviya.local", "msgSrvrClientId": "macbook-pro-1tb.iluviya.local"},open('config.json,'w'))
 #	>> quit()
 #
 # Stomp CLI Testing:
