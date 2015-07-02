@@ -11,16 +11,7 @@ class StompMessageController:
 		for task in self.stomp_tasks:
 			print(" " + task)
 
-
-class StompMessage:
-	def __init__(self, message):
-		self.message = message
-
-	def message_header(self):
-		print("Message Header")
-
-	def message_body(self):
-		print("Mesage Body")
-
-	def stomp_message(self):
-		print("Stomp Message")
+	def print_stomp_message(self, stomp_message):
+		print()
+		print(stomp_message)
+		print()
