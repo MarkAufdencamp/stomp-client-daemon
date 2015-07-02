@@ -116,6 +116,7 @@ def daemonize( pidfile, *, stdin='/dev/null',
     # Signal handler for termination (required)
     def sigterm_handler(signo, frame):
         stompUnsubscribe(stompConn, msgSrvrQueue)
+        stompConn.remove_listener('StompDaemonListener')        
         stompDisconnect(stompConn)
         print()
         sys.stdout.write('Daemon ended with pid - {0} - {1}\n'.format(os.getpid(), time.ctime()))
@@ -242,7 +243,7 @@ def main():
 
                     
 if __name__ == '__main__':
-    PIDFILE = '/tmp/daemon.pid'
+    PIDFILE = '/tmp/stomp_daemon.pid'
         
     if len(sys.argv) != 2:
         print('Usage: {} [start|stop|reload|status'.format(sys.argv[0]), file=sys.stderr)
@@ -251,8 +252,8 @@ if __name__ == '__main__':
     if sys.argv[1] == 'start':
         try:
             daemonize(PIDFILE,
-                          stdout='/tmp/daemon.log',
-                          stderr='/tmp/daemon.log')
+                          stdout='/tmp/stomp_daemon.log',
+                          stderr='/tmp/stomp_daemon.log')
         except RuntimeError as e:
             print(e, file=sys.stderr)
             raise SystemExit(1)
