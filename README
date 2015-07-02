@@ -27,11 +27,11 @@
 #	pyenv local stomp-daemon
 #
 # Run Daemon:
-#	./daemon.py start
-#	./daemon.py stop
-#	tail -f /tmp/daemon.log
-#	rm /tmp/daemon.log
-#	cat /tmp/daemon.pid
+#	./stomp_daemon.py start
+#	./stomp_daemon.py stop
+#	tail -f /tmp/stomp_daemon.log
+#	rm /tmp/stomp_daemon.log
+#	cat /tmp/stomp_daemon.pid
 #
 # Run Daemon from sys v init script:
 #	
