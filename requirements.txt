@@ -1,7 +1,16 @@
 #pip install -r requirements.txt -U
 virtualenv
 virtualenvwrapper
-#
+# stompy was apparently changed to stomp.py in pip
 stomp.py
 #
 inflection
+queuelib
+#
+# Processor/Controller defined dependencies
+# ======================================================
+#
+# GoogleServiceProcessor/GoogleComputeEngineController
+google-api-python-client
+#
+# 
