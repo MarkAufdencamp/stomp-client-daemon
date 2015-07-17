@@ -3,7 +3,7 @@ from stomp_message import StompMessage
 
 class StompRegistrationController(StompMessageController):
 	
-	stomp_tasks = ["Register", "Unregister", "SendPeerList"]
+	stomp_tasks = ["Register", "Unregister", "SendPeerList", "UserMessage"]
 	
 	def run(self):
 		print("StompRegistration")
@@ -21,3 +21,7 @@ class StompRegistrationController(StompMessageController):
 		print("SendPeerList - stomp_registration_controller.send_peer_list()")
 		stomp_message.print_message()
 
+	def user__message():
+		print("UserMessage - stomp_registration_controller.user_message()")
+		stomp_message.print_message()
+	
