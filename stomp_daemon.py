@@ -67,6 +67,8 @@ message_processors['virtual_mail_management_processor'] = StompMessageProcessor(
 message_processors['database_management_processor'] = StompMessageProcessor("database_management_processor", stompMessageRouter)
 # Factory TomcatManagementProcesor
 message_processors['tomcat_management_processor'] = StompMessageProcessor("tomcat_management_processor", stompMessageRouter)
+# Factory GoogleServiceProcessor
+message_processors['google_service_processor'] = StompMessageProcessor("google_service_processor", stompMessageRouter)
 
 def daemonize( pidfile, *, stdin='/dev/null',
                         stdout='/dev/null',
@@ -235,7 +237,7 @@ def main():
             stompConn.remove_listener('StompDaemonListener')
             print('Attempting to reconnect')
             stompDisconnect(stompConn)
-            stompConnect(msgSrvr, msgSrvrPort, threadPool)
+            stompConnect(msgSrvr, msgSrvrPort, threadPool, threadPool)
             print('Attempting to resubscribe')
             stompSubscribe(stompConn, msgSrvrQueue)
 #            stompConn.connect(wait=True)
