@@ -1,9 +1,6 @@
 # Install pip if necessary:
 #	sudo easy_install pip
 #
-# Imstall PyPi packages::
-#	sudo pip install -r requirements.txt --upgrade
-#
 # Virtual Environment install if necessary:
 #  pyenv
 #
@@ -26,6 +23,9 @@
 #	pyenv virtualenv stomp-daemon
 #	pyenv local stomp-daemon
 #
+# Imstall PyPi packages::
+#	pip install -r requirements.txt --upgrade
+#
 # Run Daemon:
 #	./stomp_daemon.py start
 #	./stomp_daemon.py stop
@@ -43,6 +43,7 @@
 #	msgSrvr - "localhost" - ActiveMQ Stomp Message Server
 #	msgSrvrPort - 61613 - ActiveMQ Stomp Message Server Connector Port
 #	msgSrvrQueue - "/queue/localhost" - ActiveMQ Stomp Message Server Queue (Daemon Agent Hostname)
+#	msgSrvrClientId - "stomp-message-processor-server.local"
 # 
 # Create config.json file:
 #	python
