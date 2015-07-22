@@ -47,7 +47,8 @@ class StompDaemonConfig:
 
 	def validateConfig(self):
 		print("StompDaemonConfig validateConfig")
-		self.hostname = socket.gethostbyaddr(socket.gethostname())[0]
+		# This breaks when reverse name services are not properly configured
+#		self.hostname = socket.gethostbyaddr(socket.gethostname())[0]
 		self.ip_addresses = socket.gethostbyname_ex(socket.gethostname())[2]
 	
 	def loadProcessors(self):
