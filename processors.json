@@ -1,0 +1,9 @@
+{"processors": [
+	{"message_processor":"stomp_registration_processor"},
+	{"message_processor":"name_service_management_processor"},
+	{"message_processor":"virtual_host_management_processor"},
+	{"message_processor":"virtual_mail_management_processor"},
+	{"message_processor":"database_management_processor"},
+	{"message_processor":"tomcat_management_processor"},
+	{"message_processor":"google_service_management_processor"}
+]}
