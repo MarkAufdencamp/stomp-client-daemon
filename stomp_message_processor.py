@@ -11,16 +11,39 @@ import os
 
 from stomp_message_controller import StompMessageController
 from stomp_message import StompMessage
+from stomp_message_broker import StompMessageBroker
 
 class StompMessageProcessor:
 
-	def __init__(self, controller_dir, stomp_message_router):
+	def __init__(self, controller_dir, stomp_message_router, stomp_daemon_connection):
 		# Load Controllers
 		self.controller_dir = controller_dir
 		self.stomp_message_router = stomp_message_router
+		self.stomp_daemon_connection = stomp_daemon_connection
+		self.msgBroker = StompMessageBroker(stomp_daemon_connection)
 		self.processor_tasks = dict()
-		self.load_stomp_controllers(controller_dir)
+		self.load_stomp_controllers(controller_dir, stomp_daemon_connection)
 		self.build_route_table()
+
+	# Load modules from dir
+	# Build class name from module file name
+	# Instantiate an instance of the class
+	# Execute the controller initialize method with a SendMessage instance
+	def load_stomp_controllers(self, controller_dir, stomp_daemon_connection):
+		print("Loading controllers - " + controller_dir)
+		#TODO: Validate controller_dir existence
+		path = controller_dir
+		modules = pkgutil.iter_modules(path=[path])
+		for loader, mod_name, ispkg in modules:
+			#TODO: Wrap class loader with exception handling
+			loaded_mod = __import__(path+"."+ mod_name, fromlist=[mod_name])
+			class_name = self.get_class_name(mod_name)
+			#TODO: Wrap class instantiation with exception handler
+			instance = self.load_stomp_controller_class(loaded_mod, class_name, stomp_daemon_connection)
+
+			#instance.run()
+			instance.register_stomp_tasks(self)
+			#instance.print_stomp_tasks()
 
 	# Build class name from module file name
 	def get_class_name(self, mod_name):
@@ -31,35 +54,18 @@ class StompMessageProcessor:
 		return output
 
 	# Load class instance
-	def load_stomp_controller_class(self, loaded_mod, class_name):
+	def load_stomp_controller_class(self, loaded_mod, class_name, stomp_daemon_connection):
 		loaded_class = getattr(loaded_mod, class_name)
 		#TODO: Test that loaded class is inherited from StompMessageController
 		#TODO: Throw exception if loaded class not inherited from StompMessageController
+		# StompMessageBroker is a proxy class of StompDaemonConnection with only a sendMessage method
+		# This exposes a simple interface for a StompMessageController method to communicate via the broker
 		instance = loaded_class()
+		instance.set_stomp_message_broker(self.msgBroker)
 		return instance
 
-	# Load modules from dir
-	# Build class name from module file name
-	# Instantiate an instance of the class
-	# Execute the controller initialize method
-	def load_stomp_controllers(self, controller_dir):
-		print("Loading controllers - " + controller_dir)
-		#TODO: Validate controller_dir existence
-		path = controller_dir
-		modules = pkgutil.iter_modules(path=[path])
-		for loader, mod_name, ispkg in modules:
-			#TODO: Wrap class loader with exception handling
-			loaded_mod = __import__(path+"."+ mod_name, fromlist=[mod_name])
-			class_name = self.get_class_name(mod_name)
-			#TODO: Wrap class instantiation with exception handler
-			instance = self.load_stomp_controller_class(loaded_mod, class_name)
-
-			#instance.run()
-			instance.register_stomp_tasks(self)
-			#instance.print_stomp_tasks()
-
 	def reload_stomp_controller():
-		print("Reload Stomp controller not yet implemented")
+		print("Reload Stomp controller not yet implmsgBrokeremented")
 
 	def tasks(self):
 		return self.processor_tasks
