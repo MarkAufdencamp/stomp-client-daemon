@@ -16,6 +16,7 @@ import stomp
 import json
 # Local imports
 from stomp_daemon_config import StompDaemonConfig
+from stomp_daemon_connection import StompDaemonConnection
 from stomp_daemon_listener import StompDaemonListener
 from stomp_message import StompMessage
 from stomp_message_processor import StompMessageProcessor
@@ -40,14 +41,18 @@ global threadPool
 threadPoolCount = 16
 threadPool = ThreadPoolExecutor(threadPoolCount)
 
-# Define the Stomp Connection and Listener as global
-# these will be factoried in the StompConnect method
-global stompConn, stompDaemonListener
-
 # Define Message Router as global
 # the route table will be populated with references to StompMEssageController's by the StompMessageProcessor constructor
 global stompMessageRouter
 stompMessageRouter = StompMessageRouter()
+
+# Define the Stomp Connection and Listener as global
+# these will be factoried in the StompConnect method
+global stompDaemonConnection
+stompDaemonConnection = StompDaemonConnection(stompDaemonConfig.msgSrvr, stompDaemonConfig.msgSrvrPort, stompDaemonConfig.msgSrvrClientId)
+global stompDaemonListener
+stompDaemonListener = StompDaemonListener(stompMessageRouter, threadPool)
+
 
 # Processors for valid recv_msg_types
 #msg_type_processors = {"TN": Task.notification,
@@ -57,19 +62,19 @@ stompMessageRouter = StompMessageRouter()
 global message_processors
 message_processors = {}
 # Factory StompRegistrationProcessor - Register, Unregister, SendPeerList
-message_processors['stomp_registration_processor'] = StompMessageProcessor("stomp_registration_processor", stompMessageRouter)
+message_processors['stomp_registration_processor'] = StompMessageProcessor("stomp_registration_processor", stompMessageRouter, stompDaemonConnection)
 # Factory NameServiceManagementProcessor
-message_processors['name_service_management_processor'] = StompMessageProcessor("name_service_management_processor", stompMessageRouter)
+message_processors['name_service_management_processor'] = StompMessageProcessor("name_service_management_processor", stompMessageRouter, stompDaemonConnection)
 # Factory VirtualHostManagementProcessor
-message_processors['virtual_host_management_processor'] = StompMessageProcessor("virtual_host_management_processor", stompMessageRouter)
+message_processors['virtual_host_management_processor'] = StompMessageProcessor("virtual_host_management_processor", stompMessageRouter, stompDaemonConnection)
 # Factory VirtualMailManagementProcesor
-message_processors['virtual_mail_management_processor'] = StompMessageProcessor("virtual_mail_management_processor", stompMessageRouter)
+message_processors['virtual_mail_management_processor'] = StompMessageProcessor("virtual_mail_management_processor", stompMessageRouter, stompDaemonConnection)
 # Factory DatabaseManagementProcesor
-message_processors['database_management_processor'] = StompMessageProcessor("database_management_processor", stompMessageRouter)
+message_processors['database_management_processor'] = StompMessageProcessor("database_management_processor", stompMessageRouter, stompDaemonConnection)
 # Factory TomcatManagementProcesor
-message_processors['tomcat_management_processor'] = StompMessageProcessor("tomcat_management_processor", stompMessageRouter)
+message_processors['tomcat_management_processor'] = StompMessageProcessor("tomcat_management_processor", stompMessageRouter, stompDaemonConnection)
 # Factory GoogleServiceProcessor
-message_processors['google_service_processor'] = StompMessageProcessor("google_service_processor", stompMessageRouter)
+message_processors['google_service_processor'] = StompMessageProcessor("google_service_processor", stompMessageRouter, stompDaemonConnection)
 
 def daemonize( pidfile, *, stdin='/dev/null',
                         stdout='/dev/null',
@@ -118,67 +123,21 @@ def daemonize( pidfile, *, stdin='/dev/null',
 
     # Signal handler for termination (required)
     def sigterm_handler(signo, frame):
-        stompUnsubscribe(stompConn, stompDaemonConfig.msgSrvrQueue)
-        stompConn.remove_listener('StompDaemonListener')        
-        stompDisconnect(stompConn)
-        print()
+        # TODO: Have threads completed before system exit? Need Process Control!
+        stompDaemonConnection.stompUnsubscribe(stompDaemonConfig.msgSrvrQueue)
+        stompDaemonConnection.stompConn.remove_listener('StompDaemonListener')        
+        stompDaemonConnection.stompDisconnect()
         sys.stdout.write('Daemon ended with pid - {0} - {1}\n'.format(os.getpid(), time.ctime()))
+        print()
         raise SystemExit(1)
     
     signal.signal(signal.SIGTERM, sigterm_handler)
     
-def stompConnect(msgSrvr, msgSrvrPort, msgSrvrClientId, stompMessageRouter, threadPool):
-    # Connect via Stomp to the Message Server
-    # Factory Stomp connection
-    sys.stdout.write('Connecting to message server - {0}:{1} - {2}\n'.format(msgSrvr, msgSrvrPort, time.ctime()))
-    global stompConn, stompDaemonListener
-    
-    try:
-        stompConn = stomp.Connection( host_and_ports=[(msgSrvr, msgSrvrPort)], heartbeats=(60000, 20000) )
-        stompDaemonListener = StompDaemonListener(stompMessageRouter, threadPool)
-        stompConn.set_listener('StompDaemonListener', stompDaemonListener)
-    except Exception as err:
-        print('Message Server Connection Error')
-
-    try:
-        stompConn.start()
-    except Exception:
-        print('Message Server Start Error')
-
-    try:
-        stompConn.connect(headers={'client-id': msgSrvrClientId})
-    except Exception:
-        print('Message Server Connect Error')
- 
-          
-def stompDisconnect(stompConn):
-    sys.stdout.write('Disconnecting from message server {}\n'.format(time.ctime()))
-    try:
-        stompConn.disconnect()
-    except Exception:
-        print('Message Server Disconnect Error')
-
-def stompSubscribe(stompConn, msgSrvrQueue):
-    # Subscribe to the configured message queue
-    sys.stdout.write('Subscribing to message queue - {0} - {1}\n'.format(msgSrvrQueue, time.ctime()))
-    try:
-        stompConn.subscribe(destination=msgSrvrQueue, id=1, ack='auto')
-    except Exception:
-        print("Message Queue Subscribe Error")
-
-def stompUnsubscribe(stompConn, msgSrvrQueue):
-    # Unsubscribe to the configured message queue
-    sys.stdout.write('Unsubscribing from message queue - {0} - {1}\n'.format(msgSrvrQueue, time.ctime()))
-    try:
-        stompConn.unsubscribe(id=msgSrvrQueue)
-    except Exception:
-        print("Message Queue Unsubscribe Error")
-        
 def main():
 
     print()
     sys.stdout.write('Daemon started with pid - {0} - {1}\n'.format(os.getpid(), time.ctime()))
-    print()
+    #print()
 
     # Print Routes
     stompMessageRouter.print_routes()
@@ -188,10 +147,10 @@ def main():
     # Currently StompConnection11 class default
     # StompConnection12 possible but may not be implemented for all platforms
     # Python Stomp version matching ActiveMQ/Stomp, Rails ActiveMessaging/Stomp, Java JMS/Stomp, WebSockets/Stomp
-    stompConnect(stompDaemonConfig.msgSrvr, stompDaemonConfig.msgSrvrPort, stompDaemonConfig.msgSrvrClientId, stompMessageRouter, threadPool)
+    stompDaemonConnection.stompConnect(stompDaemonListener)
 
     # Subscribe to the message queue
-    stompSubscribe(stompConn, stompDaemonConfig.msgSrvrQueue)
+    stompDaemonConnection.stompSubscribe(stompDaemonConfig.msgSrvrQueue)
 
     # Send the CLI start message to itself
     #    stompConn.send(body=' '.join(sys.argv[1:]), destination=msgSrvrQueue)
@@ -199,18 +158,18 @@ def main():
     while True:
 #       sys.stdout.write('Daemon Alive! {}\n'.format(time.ctime()))
         time.sleep(60)
-        if stompConn.is_connected():
+        if stompDaemonConnection.stompConn.is_connected():
            print('Agent Connected when daemon wokeup')
         else:
             print('Agent Disconnected when daemon wokeup')
             print('Removing Listener')
-            stompConn.remove_listener('StompDaemonListener')
+            stompDaemonConnection.stompConn.remove_listener('StompDaemonListener')
             print('Disconnecting')
-            stompDisconnect(stompConn)
+            stompDaemonConnection.stompDisconnect()
             print('Attempting to reconnect')
-            stompConnect(stompDaemonConfig.msgSrvr, stompDaemonConfig.msgSrvrPort, stompDaemonConfig.msgSrvrClientId, stompMessageRouter, threadPool)
+            stompDaemonConnection.stompConnect(stompDaemonListener)
             print('Attempting to resubscribe')
-            stompSubscribe(stompConn, stompDaemonConfig.msgSrvrQueue)
+            stompDaemonConnection.stompSubscribe(stompDaemonConfig.msgSrvrQueue)
 
                     
 if __name__ == '__main__':
