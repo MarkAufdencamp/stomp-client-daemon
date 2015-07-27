@@ -2,6 +2,11 @@ import time
 import json
 
 class StompMessage:
+
+# self.stomp_mesage_headers
+# self.stomp_message_body
+# self.parsed_body
+
 	def __init__(self, headers, body):
 		self.stomp_message_headers = headers
 		self.stomp_message_body = body
