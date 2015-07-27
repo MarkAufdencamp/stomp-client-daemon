@@ -10,7 +10,8 @@ class StompDaemonListener(ConnectionListener):
         super().__init__()
         self.router = router
         self.threadPool = threadPool
-        self.recv_msg_types = {"TN": "Task Notification Message Type, Message Id key, Message contains Task Retrieval URL",
+        self.recv_msg_types = {"STOMP-JSON": "Stomp Message with JSON Body",
+                  "TN": "Task Notification Message Type, Message Id key, Message contains Task Retrieval URL",
                   "TSQ": "Task Status Query Message Type, Message Id key, Message contains Task Notification Message Id"}
 
     def on_connecting(self, host_and_port):
@@ -18,7 +19,6 @@ class StompDaemonListener(ConnectionListener):
         
     def on_connected(self, headers, body):
         print("Agent Connected")
-        print()
         
     def on_disconnected(self):
         print('Agent Disconnected')
@@ -71,7 +71,8 @@ class StompDaemonListener(ConnectionListener):
         try:
             self.route_msg(headers, body)
         except Exception:
-            print("StompDaemonListener Routing Exception")
+            #print("StompDaemonListener Routing Exception")
+            self.print_msg("UNROUTABLE MESSAGE", headers, body)
 
         print('Message process complete - {0} - {1}'.format(headers['message-id'], time.ctime()))
         print()
