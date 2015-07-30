@@ -8,7 +8,6 @@ class StompRegistrationController(StompMessageController):
 	def __init__(self):
 		StompMessageController.__init__
 		#print("StompRegistrationController.__init__()")
-		self.registeredClients = []
 		self.registeredPeers = {}
 	
 	def run(self):
@@ -23,10 +22,8 @@ class StompRegistrationController(StompMessageController):
 		print("Registering Client Id - {0} - {1}".format(clientId, clientDesc))
 
 		if (clientId not in self.registeredClients):
-			self.registeredClients.append(clientId)
 			self.registeredPeers[clientId] = clientDesc
-			
-		self.broadcast_peer_list()
+			self.broadcast_peer_list()
 
 	def unregister(self, stomp_message):
 		print("Unregister - stomp_registration_controller.unregister()")
@@ -36,20 +33,17 @@ class StompRegistrationController(StompMessageController):
 		print("Unregistering Client Id - ", clientId)
 
 		if (clientId in self.registeredClients):
-			self.registeredClients.remove(clientId)
 			del self.registeredPeers[clientId]
-
-		self.broadcast_peer_list()
+			self.broadcast_peer_list()
 
 	def broadcast_peer_list(self):
 		print("StompRegistrationController.broadcast_peer_list()")
 		messageDict = {}
 		messageDict["task"] = "PeerList"
 		messageDict["registeredPeers"] = self.registeredPeers
-		for clientId in self.registeredClients:
-			#print(clientId)
+		
+		for clientId in self.registeredPeers:
 			messageDict["clientId"] = clientId
-			#print(messageDict)
 			self.send_message(clientId, messageDict)
 	
 	def send_peer_list(self, stomp_message):
