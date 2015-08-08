@@ -21,7 +21,7 @@ class StompRegistrationController(StompMessageController):
 		clientDesc = stomp_message.parsed_body['clientDesc']
 		print("Registering Client Id - {0} - {1}".format(clientId, clientDesc))
 
-		if (clientId not in self.registeredPeers.keys()):
+		if (clientId not in self.registeredPeers):
 			self.registeredPeers[clientId] = clientDesc
 			self.broadcast_peer_list()
 
@@ -32,7 +32,7 @@ class StompRegistrationController(StompMessageController):
 		clientId = stomp_message.parsed_body['clientId']
 		print("Unregistering Client Id - ", clientId)
 
-		if (clientId in self.registeredPeers.keys()):
+		if (clientId in self.registeredPeers):
 			del self.registeredPeers[clientId]
 			self.broadcast_peer_list()
 
@@ -42,7 +42,7 @@ class StompRegistrationController(StompMessageController):
 		messageDict["task"] = "PeerList"
 		messageDict["registeredPeers"] = self.registeredPeers
 		
-		for clientId in self.registeredPeers.keys():
+		for clientId in self.registeredPeers:
 			messageDict["clientId"] = clientId
 			print(clientId, messageDict)
 			self.send_message(clientId, messageDict)
