@@ -1,3 +1,5 @@
+import json
+
 class StompMessageController:
 	def set_stomp_message_broker(self, stompMessageBroker):
 		self.stompMessageBroker = stompMessageBroker
@@ -18,6 +20,16 @@ class StompMessageController:
 		print()
 		print(stomp_message)
 		print()
+
+	def send_message(self, queue, messageDict):
+		print("StompMessageController() send_message")
+
+		jsonMsg = json.dumps(messageDict)
+		messageQueue = "/queue/" + queue
+		#print(messageQueue)
+		#print("Queue - {0}, Clients - {1}".format(messageQueue, self.registeredClients) )
+
+		self.stompMessageBroker.sendMessage(jsonMsg, messageQueue)
 
 	def __getattr__(self, name):
 		def _missing(*args, **kwargs):
