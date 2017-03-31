@@ -65,10 +65,3 @@ class StompRegistrationController(StompMessageController):
 		print("UserMessage - stomp_registration_controller.user_message()")
 		stomp_message.print_message()
 	
-	def send_message(self, clientId, messageDict):
-		#print("StompRegistrationController() send_message")
-		jsonMsg = json.dumps(messageDict)	
-		messageQueue = "/queue/" + clientId
-		#print(messageQueue)
-		#print("Queue - {0}, Clients - {1}".format(messageQueue, self.registeredClients) )
-		self.stompMessageBroker.sendMessage(jsonMsg, messageQueue)
