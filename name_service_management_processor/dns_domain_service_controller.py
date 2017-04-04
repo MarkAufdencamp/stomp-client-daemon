@@ -24,18 +24,18 @@ class DnsDomainServiceController(StompMessageController):
 		print("RemoveBindZoneCNameRecord - dns_domain_service_controller.remove_bind_zone_c_name_record()")
 		stomp_message.print_message()
 
-	def add_bind_zone_m_x_record(self, stomp_message):
-		print("AddBindZoneMXRecord - dns_domain_service_controller.add_bind_zone_m_x_record()")
+	def add_bind_zone_mx_record(self, stomp_message):
+		print("AddBindZoneMXRecord - dns_domain_service_controller.add_bind_zone_mx_record()")
 		stomp_message.print_message()
 
-	def remove_bind_zone_m_x_record(self, stomp_message):
-		print("RemoveBindZoneMXRecord - dns_domain_service_controller.remove_bind_zone_m_x_record()")
+	def remove_bind_zone_mx_record(self, stomp_message):
+		print("RemoveBindZoneMXRecord - dns_domain_service_controller.remove_bind_zone_mx_record()")
 		stomp_message.print_message()
 
-	def add_bind_zone_s_p_f_record(self, stomp_message):
-		print("AddBindZoneSPFRecord - dns_domain_service_controller.add_bind_zone_s_p_f_record()")
+	def add_bind_zone_spf_record(self, stomp_message):
+		print("AddBindZoneSPFRecord - dns_domain_service_controller.add_bind_zone_spf_record()")
 		stomp_message.print_message()
 
-	def remove_bind_zone_s_p_f_record(self, stomp_message):
-		print("RemoveBindZoneSPFRecord - dns_domain_service_controller.remove_bind_zone_s_p_f_record()")
+	def remove_bind_zone_spf_record(self, stomp_message):
+		print("RemoveBindZoneSPFRecord - dns_domain_service_controller.remove_bind_zone_spf_record()")
 		stomp_message.print_message()
