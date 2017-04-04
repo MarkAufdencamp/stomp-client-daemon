@@ -18,9 +18,9 @@ class BindZoneFileServiceController(StompMessageController):
 		acknowledgementQueue = acknowledgementMessageDict["service"]
 		
 		if successfulProvisioning:
-			stomp_message.acknowledge_success(acknowledgementQueue, acknowledgementMessageDict)
+			self.acknowledge_success(acknowledgementQueue, acknowledgementMessageDict)
 		else:
-			stomp_message.acknowledge_failure(acknowledgementQueue, acknowledgementMessageDict)
+			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessageDict)
 
 	def remove_bind_zone_file(self, stomp_message):
 		print("RemoveBindZone - bind_zone_file_service_controller.remove_bind_zone_file()")
@@ -32,9 +32,9 @@ class BindZoneFileServiceController(StompMessageController):
 		acknowledgementQueue = acknowledgementMessage["service"]
 		
 		if successfulProvisioning:
-			stomp_message.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
 		else:
-			stomp_message.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
 
 	def enable_bind_zone_file(self, stomp_message):
 		print("EnableBindZone - bind_zone_file_service_controller.enable_bind_zone_file()")
@@ -46,9 +46,9 @@ class BindZoneFileServiceController(StompMessageController):
 		acknowledgementQueue = acknowledgementMessage["service"]
 		
 		if successfulProvisioning:
-			stomp_message.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
 		else:
-			stomp_message.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
 
 	def disable_bind_zone_file(self, stomp_message):
 		print("DisableBindZone - bind_zone_file_service_controller.disable_bind_zone_file()")
@@ -60,9 +60,9 @@ class BindZoneFileServiceController(StompMessageController):
 		acknowledgementQueue = acknowledgementMessage["service"]
 		
 		if successfulProvisioning:
-			stomp_message.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
 		else:
-			stomp_message.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
 
 	def acknowledge_success(self, queue, message):
 		print("== Acknowledge Message Success ==")
