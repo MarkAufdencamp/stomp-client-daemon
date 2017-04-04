@@ -24,8 +24,8 @@ class PostfixDovecotVirtualHostServiceController(StompMessageController):
 		print("DisablePostfixDovecotVirtualHost - postfix_dovecot_virtual_host_service_controller.disable_postfix_dovecot_virtual_host()")
 		stomp_message.print_message()
 
-	def create_postfix_dovecot_virtual_host(self, stomp_message):
-		print("CreatePostfixDovecotVirtualHostRelay - postfix_dovecot_virtual_host_service_controller.create_postfix_dovecot_virtual_host()")
+	def create_postfix_dovecot_virtual_host_relay(self, stomp_message):
+		print("CreatePostfixDovecotVirtualHostRelay - postfix_dovecot_virtual_host_service_controller.create_postfix_dovecot_virtual_host_relay()")
 		stomp_message.print_message()
 
 	def remove_postfix_dovecot_virtual_host_relay(self, stomp_message):
