@@ -16,13 +16,12 @@ class GoogleComputeEngineController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def delete_compute_engine_instance(self, stomp_message):
 		print("DeleteComputeEngineInstance - google_compute_engine_controller.delete_compute_engine_instance()")
@@ -30,13 +29,12 @@ class GoogleComputeEngineController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def start_compute_engine_instance(self, stomp_message):
 		print("StartComputeEngineInstance - google_compute_engine_controller.start_compute_engine_instance()")
@@ -44,13 +42,12 @@ class GoogleComputeEngineController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def stop_compute_engine_instance(self, stomp_message):
 		print("StopComputeEngineInstance - google_compute_engine_controller.stop_compute_engine_instance()")
@@ -58,18 +55,21 @@ class GoogleComputeEngineController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
-	def acknowledge_success(self, queue, message):
+	def acknowledge_success(self, acknowledgementMessageDict):
 		print("== Acknowledge Message Success ==")
-		self.send_message(queue, message)
+		acknowledgementQueue = acknowledgementMessageDict["service"]
+		acknowledgementMessageDict["taskResult"] = "Success"
+		self.send_message(acknowledgementQueue, acknowledgementMessageDict)
 	
-	def acknowledge_failure(self, queue, message):
+	def acknowledge_failure(self, acknowledgementMessageDict):
 		print("== Acknowledge Message Failure ==")
-		self.send_message(queue, message)
+		acknowledgementQueue = acknowledgementMessageDict["service"]
+		acknowledgementMessageDict["taskResult"] = "Failure"
+		self.send_message(acknowledgementQueue, acknowledgementMessageDict)

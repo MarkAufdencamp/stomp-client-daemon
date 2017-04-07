@@ -14,13 +14,12 @@ class VirtualHostAccountServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def remove_virtual_host_account(self, stomp_message):
 		print("RemoveVirtualHostAccount - virtual_host_account_service_controller.remove_virtual_host_account()")
@@ -28,13 +27,12 @@ class VirtualHostAccountServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def enable_virtual_host_account(self, stomp_message):
 		print("EnableVirtualHostAccount - virtual_host_account_service_controller.enable_virtual_host_account()")
@@ -42,13 +40,12 @@ class VirtualHostAccountServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def disable_virtual_host_account(self, stomp_message):
 		print("DisableVirtualHostAccount - virtual_host_account_service_controller.disable_virtual_host_account()")
@@ -56,17 +53,25 @@ class VirtualHostAccountServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def set_virtual_host_account_passwd(self, stomp_message):
 		print("SetVirtualHostAccountPasswd - virtual_host_account_service_controller.set_virtual_host_account_passwd()")
 		stomp_message.print_message()
+
+		successfulProvisioning = True
+		
+		acknowledgementMessageDict = stomp_message.parsed_body
+		
+		if successfulProvisioning:
+			self.acknowledge_success(acknowledgementMessageDict)
+		else:
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def backup_virtual_host_account(self, stomp_message):
 		print("BackupVirtualHostAccount - virtual_host_account_service_controller.backup_virtual_host_account()")
@@ -74,13 +79,12 @@ class VirtualHostAccountServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def restore_virtual_host_account(self, stomp_message):
 		print("RestoreVirtualHostAccount - virtual_host_account_service_controller.restore_virtual_host_account()")
@@ -88,74 +92,73 @@ class VirtualHostAccountServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
-	def add_s_s_h_authorized_key(self, stomp_message):
-		print("AddSSHAuthorizedKey - virtual_host_account_service_controller.add_s_s_h_authorized_key()")
+	def add_ssh_authorized_key(self, stomp_message):
+		print("AddSSHAuthorizedKey - virtual_host_account_service_controller.add_ssh_authorized_key()")
 		stomp_message.print_message()
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
-	def remove_s_s_h_authorized_key(self, stomp_message):
-		print("RemoveSSHAuthorizedKey - virtual_host_account_service_controller.remove_s_s_h_authorized_key()")
+	def remove_ssh_authorized_key(self, stomp_message):
+		print("RemoveSSHAuthorizedKey - virtual_host_account_service_controller.remove_ssh_authorized_key()")
 		stomp_message.print_message()
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
-	def add_c_r_o_n_job(self, stomp_message):
-		print("AddCRONJob - virtual_host_account_service_controller.add_c_r_o_n_job()")
+	def add_cron_job(self, stomp_message):
+		print("AddCRONJob - virtual_host_account_service_controller.add_cron_job()")
 		stomp_message.print_message()
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
-	def remove_c_r_o_n_job(self, stomp_message):
-		print("RemoveCRONJob - virtual_host_account_service_controller.remove_c_r_o_n_job()")
+	def remove_cron_job(self, stomp_message):
+		print("RemoveCRONJob - virtual_host_account_service_controller.remove_cron_job()")
 		stomp_message.print_message()
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
-	def acknowledge_success(self, queue, message):
+	def acknowledge_success(self, acknowledgementMessageDict):
 		print("== Acknowledge Message Success ==")
-		self.send_message(queue, message)
+		acknowledgementQueue = acknowledgementMessageDict["service"]
+		acknowledgementMessageDict["taskResult"] = "Success"
+		self.send_message(acknowledgementQueue, acknowledgementMessageDict)
 	
-	def acknowledge_failure(self, queue, message):
+	def acknowledge_failure(self, acknowledgementMessageDict):
 		print("== Acknowledge Message Failure ==")
-		self.send_message(queue, message)
+		acknowledgementQueue = acknowledgementMessageDict["service"]
+		acknowledgementMessageDict["taskResult"] = "Failure"
+		self.send_message(acknowledgementQueue, acknowledgementMessageDict)

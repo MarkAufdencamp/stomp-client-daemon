@@ -14,13 +14,12 @@ class MailDomainServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
-		
+		acknowledgementMessageDict = stomp_message.parsed_body
+
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def remove_virtual_mailbox(self, stomp_message):
 		print("RemoveVirtualMailbox - mail_domain_service_controller.remove_virtual_mailbox()")
@@ -28,23 +27,12 @@ class MailDomainServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
-
-		successfulProvisioning = True
-		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
-		
-		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
-		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def enable_virtual_mailbox(self, stomp_message):
 		print("EnableVirtualMailbox - mail_domain_service_controller.enable_virtual_mailbox()")
@@ -52,13 +40,12 @@ class MailDomainServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def disable_virtual_mailbox(self, stomp_message):
 		print("DisableVirtualMailbox - mail_domain_service_controller.disable_virtual_mailbox()")
@@ -66,17 +53,25 @@ class MailDomainServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def set_virtual_mailbox_passwd(self, stomp_message):
 		print("SetVirtualMailboxPasswd - mail_domain_service_controller.set_virtual_mailbox_passwd()")
 		stomp_message.print_message()
+
+		successfulProvisioning = True
+		
+		acknowledgementMessageDict = stomp_message.parsed_body
+		
+		if successfulProvisioning:
+			self.acknowledge_success(acknowledgementMessageDict)
+		else:
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def create_virtual_mail_alias(self, stomp_message):
 		print("CreateVirtualMailAlias - mail_domain_service_controller.create_virtual_mail_alias()")
@@ -84,13 +79,12 @@ class MailDomainServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def remove_virtual_mail_alias(self, stomp_message):
 		print("RemoveVirtualMailAlias - mail_domain_service_controller.remove_virtual_mail_alias()")
@@ -98,13 +92,12 @@ class MailDomainServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def create_relay_recipient(self, stomp_message):
 		print("CreateRelayRecipient - mail_domain_service_controller.create_relay_recipient()")
@@ -112,13 +105,12 @@ class MailDomainServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def remove_relay_recipient(self, stomp_message):
 		print("RemoveRelayRecipient - mail_domain_service_controller.remove_relay_recipient()")
@@ -126,18 +118,21 @@ class MailDomainServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
-	def acknowledge_success(self, queue, message):
+	def acknowledge_success(self, acknowledgementMessageDict):
 		print("== Acknowledge Message Success ==")
-		self.send_message(queue, message)
+		acknowledgementQueue = acknowledgementMessageDict["service"]
+		acknowledgementMessageDict["taskResult"] = "Success"
+		self.send_message(acknowledgementQueue, acknowledgementMessageDict)
 	
-	def acknowledge_failure(self, queue, message):
+	def acknowledge_failure(self, acknowledgementMessageDict):
 		print("== Acknowledge Message Failure ==")
-		self.send_message(queue, message)
+		acknowledgementQueue = acknowledgementMessageDict["service"]
+		acknowledgementMessageDict["taskResult"] = "Failure"
+		self.send_message(acknowledgementQueue, acknowledgementMessageDict)

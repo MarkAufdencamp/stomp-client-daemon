@@ -14,13 +14,12 @@ class DnsDomainServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def remove_bind_zone_a_record(self, stomp_message):
 		print("RemoveBindZoneARecord - dns_domain_service_controller.remove_bind_zone_a_record()")
@@ -28,13 +27,12 @@ class DnsDomainServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def add_bind_zone_c_name_record(self, stomp_message):
 		print("AddBindZoneCNameRecord - dns_domain_service_controller.add_bind_zone_c_name_record()")
@@ -42,13 +40,12 @@ class DnsDomainServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def remove_bind_zone_c_name_record(self, stomp_message):
 		print("RemoveBindZoneCNameRecord - dns_domain_service_controller.remove_bind_zone_c_name_record()")
@@ -56,13 +53,12 @@ class DnsDomainServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def add_bind_zone_mx_record(self, stomp_message):
 		print("AddBindZoneMXRecord - dns_domain_service_controller.add_bind_zone_mx_record()")
@@ -70,13 +66,12 @@ class DnsDomainServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def remove_bind_zone_mx_record(self, stomp_message):
 		print("RemoveBindZoneMXRecord - dns_domain_service_controller.remove_bind_zone_mx_record()")
@@ -84,13 +79,12 @@ class DnsDomainServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def add_bind_zone_spf_record(self, stomp_message):
 		print("AddBindZoneSPFRecord - dns_domain_service_controller.add_bind_zone_spf_record()")
@@ -98,13 +92,12 @@ class DnsDomainServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def remove_bind_zone_spf_record(self, stomp_message):
 		print("RemoveBindZoneSPFRecord - dns_domain_service_controller.remove_bind_zone_spf_record()")
@@ -112,18 +105,21 @@ class DnsDomainServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
-	def acknowledge_success(self, queue, message):
+	def acknowledge_success(self, acknowledgementMessageDict):
 		print("== Acknowledge Message Success ==")
-		self.send_message(queue, message)
+		acknowledgementQueue = acknowledgementMessageDict["service"]
+		acknowledgementMessageDict["taskResult"] = "Success"
+		self.send_message(acknowledgementQueue, acknowledgementMessageDict)
 	
-	def acknowledge_failure(self, queue, message):
+	def acknowledge_failure(self, acknowledgementMessageDict):
 		print("== Acknowledge Message Failure ==")
-		self.send_message(queue, message)
+		acknowledgementQueue = acknowledgementMessageDict["service"]
+		acknowledgementMessageDict["taskResult"] = "Failure"
+		self.send_message(acknowledgementQueue, acknowledgementMessageDict)

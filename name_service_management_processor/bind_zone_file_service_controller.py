@@ -15,12 +15,11 @@ class BindZoneFileServiceController(StompMessageController):
 		successfulProvisioning = True
 		
 		acknowledgementMessageDict = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessageDict["service"]
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessageDict)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessageDict)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def remove_bind_zone_file(self, stomp_message):
 		print("RemoveBindZone - bind_zone_file_service_controller.remove_bind_zone_file()")
@@ -28,13 +27,12 @@ class BindZoneFileServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def enable_bind_zone_file(self, stomp_message):
 		print("EnableBindZone - bind_zone_file_service_controller.enable_bind_zone_file()")
@@ -42,13 +40,12 @@ class BindZoneFileServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
 	def disable_bind_zone_file(self, stomp_message):
 		print("DisableBindZone - bind_zone_file_service_controller.disable_bind_zone_file()")
@@ -56,18 +53,21 @@ class BindZoneFileServiceController(StompMessageController):
 
 		successfulProvisioning = True
 		
-		acknowledgementMessage = stomp_message.parsed_body
-		acknowledgementQueue = acknowledgementMessage["service"]
+		acknowledgementMessageDict = stomp_message.parsed_body
 		
 		if successfulProvisioning:
-			self.acknowledge_success(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_success(acknowledgementMessageDict)
 		else:
-			self.acknowledge_failure(acknowledgementQueue, acknowledgementMessage)
+			self.acknowledge_failure(acknowledgementMessageDict)
 
-	def acknowledge_success(self, queue, message):
+	def acknowledge_success(self, acknowledgementMessageDict):
 		print("== Acknowledge Message Success ==")
-		self.send_message(queue, message)
+		acknowledgementQueue = acknowledgementMessageDict["service"]
+		acknowledgementMessageDict["taskResult"] = "Success"
+		self.send_message(acknowledgementQueue, acknowledgementMessageDict)
 	
-	def acknowledge_failure(self, queue, message):
+	def acknowledge_failure(self, acknowledgementMessageDict):
 		print("== Acknowledge Message Failure ==")
-		self.send_message(queue, message)
+		acknowledgementQueue = acknowledgementMessageDict["service"]
+		acknowledgementMessageDict["taskResult"] = "Failure"
+		self.send_message(acknowledgementQueue, acknowledgementMessageDict)
