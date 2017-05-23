@@ -3,7 +3,7 @@ from stomp_message import StompMessage
 
 class DnsDomainServiceController(StompMessageController):
 	
-	stomp_tasks = ["AddBindZoneARecord", "RemoveBindZoneARecord", "AddBindZoneCNameRecord", "RemoveBindZoneCNameRecord", "AddBindZoneMXRecord", "RemoveBindZoneMXRecord", "AddBindZoneSPFRecord", "RemoveBindZoneSPFRecord"]
+	stomp_tasks = ["AddBindZoneARecord", "RemoveBindZoneARecord", "AddBindZoneAAAARecord", "RemoveBindZoneAAAARecord", "AddBindZoneCNameRecord", "RemoveBindZoneCNameRecord", "AddBindZoneMXRecord", "RemoveBindZoneMXRecord", "AddBindZoneSPFRecord", "RemoveBindZoneSPFRecord", "AddBindZoneSRVRecord", "RemoveBindZoneSRVRecord"]
 	
 	def run(self):
 		print("DnsDomainServiceController")
@@ -23,6 +23,32 @@ class DnsDomainServiceController(StompMessageController):
 
 	def remove_bind_zone_a_record(self, stomp_message):
 		print("RemoveBindZoneARecord - dns_domain_service_controller.remove_bind_zone_a_record()")
+		stomp_message.print_message()
+
+		successfulProvisioning = True
+		
+		acknowledgementMessageDict = stomp_message.parsed_body
+		
+		if successfulProvisioning:
+			self.acknowledge_success(acknowledgementMessageDict)
+		else:
+			self.acknowledge_failure(acknowledgementMessageDict)
+
+	def add_bind_zone_aaaa_record(self, stomp_message):
+		print("AddBindZoneAAAARecord - dns_domain_service_controller.add_bind_zone_aaaa_record()")
+		stomp_message.print_message()
+
+		successfulProvisioning = True
+		
+		acknowledgementMessageDict = stomp_message.parsed_body
+		
+		if successfulProvisioning:
+			self.acknowledge_success(acknowledgementMessageDict)
+		else:
+			self.acknowledge_failure(acknowledgementMessageDict)
+
+	def remove_bind_zone_aaaa_record(self, stomp_message):
+		print("RemoveBindZoneAAAARecord - dns_domain_service_controller.remove_bind_zone_aaaa_record()")
 		stomp_message.print_message()
 
 		successfulProvisioning = True
@@ -101,6 +127,32 @@ class DnsDomainServiceController(StompMessageController):
 
 	def remove_bind_zone_spf_record(self, stomp_message):
 		print("RemoveBindZoneSPFRecord - dns_domain_service_controller.remove_bind_zone_spf_record()")
+		stomp_message.print_message()
+
+		successfulProvisioning = True
+		
+		acknowledgementMessageDict = stomp_message.parsed_body
+		
+		if successfulProvisioning:
+			self.acknowledge_success(acknowledgementMessageDict)
+		else:
+			self.acknowledge_failure(acknowledgementMessageDict)
+
+	def add_bind_zone_srv_record(self, stomp_message):
+		print("AddBindZoneSRVRecord - dns_domain_service_controller.add_bind_zone_srv_record()")
+		stomp_message.print_message()
+
+		successfulProvisioning = True
+		
+		acknowledgementMessageDict = stomp_message.parsed_body
+		
+		if successfulProvisioning:
+			self.acknowledge_success(acknowledgementMessageDict)
+		else:
+			self.acknowledge_failure(acknowledgementMessageDict)
+
+	def remove_bind_zone_srv_record(self, stomp_message):
+		print("RemoveBindZoneSRVRecord - dns_domain_service_controller.remove_bind_zone_srv_record()")
 		stomp_message.print_message()
 
 		successfulProvisioning = True
