@@ -1,0 +1,150 @@
+<html>
+<head>
+	<title></title>
+</head>
+
+<body>
+Python Stomp Client Daemon
+
+Attaches to ActiveMQ Message Bus with it's server name as a queue name via the STOMP protocol.
+The daemon loads message controllers dynamically, constructing a structure of messages and the appropriate message handler methods.
+It then listens for asynchronous JSON messages placed into it's server queue.
+Upon message reciept the message controller and method are identified, and a call to the method is invoked.
+The message is passed as a parameter to the method.
+* Firewall Requirements - Outbound connection to message server via port 61613
+
+Controllers Implemented
+
+BindZoneFileService
+	"CreateBindZoneFile" - Create db.tld.domain zone file in /etc/bind.  Add zone file to /etc/bind/named.conf.local.
+	"RemoveBindZoneFile" - Remove db.tld.domain zone file from /etc/bind.  Remove zone file from /etc/bind/named.conf.local.
+	"EnableBindZoneFile" - Add zone file to /etc/bind/named.conf.local.
+	"DisableBindZoneFile" - Remove zone file from /etc/bind/named.conf.local.
+	* No reverse zone coverage currently available
+
+DNSDomainService - Dependent on BindZoneFileService
+	"AddBindZoneARecord" - Add A Record to /etc/bind/db.tld.domain zone file.
+	"RemoveBindZoneARecord" - Remove A Record from /etc/bind/db.tld.domain zone file.
+	"AddBindZoneAAAARecord" - Add AAAA Record to /etc/bind/db.tld.domain zone file.
+	"RemoveBindZoneAAAARecord" - Remove AAAA Record from /etc/bind/db.tld.domain zone file.
+	"AddBindZoneCNameRecord" - Add CName Record to /etc/bind/db.tld.domain zone file.
+	"RemoveBindZoneCNameRecord" - Remove CName Record from /etc/bind/db.tld.domain zone file.
+	"AddBindZoneMXRecord" - Add MX Record to /etc/bind/db.tld.domain zone file.
+	"RemoveBindZoneMXRecord" - Remove MX Record from /etc/bind/db.tld.domain zone file.
+	"AddBindZoneSPFRecord" - Add SPF Record to /etc/bind/db.tld.domain zone file.
+	"RemoveBindZoneSPFRecord" - Remove SPF Record from /etc/bind/db.tld.domain zone file.
+	"AddBindZoneSRVRecord" - Add SRV Record to /etc/bind/db.tld.domain zone file.
+	"RemoveBindZoneSRVRecord" - Remove SRV Record from /etc/bind/db.tld.domain zone file.
+	* No reverse zone coverage currently available
+	
+VirtualHostAccountService
+	"CreateVirtualHostAccount" - Create domain host server user account. (subdomain.domain.tld)
+	"RemoveVirtualHostAccount" - Remove domain host server user account.
+	"EnableVirtualHostAcount" - Enable domain host server user account.
+	"DisableVirtualHostAccount" - Disable domain host server user account.
+	"SetVirtualHostAccountPasswd" - Set domain host user account password.
+	"BackupVirtualHostAccount" - Backup domain host server user account.
+	"RestoreVirtualHostAccount" - Restore domain host server user account.
+	"AddSSHAuthorizedKey" - Add SSH key pair to host server user account.
+	"RemoveSSHAuthorizedKey" - Remove SSH key pair from host server user account.
+	"AddCRONJob" - Add CRON job to host server user crontab.
+	"RemoveCRONJob" - Remove CRON job from host server user crontab.
+	
+ApacheVirtualHostService - Dependent on VirtualHostAccountService
+	"CreateApacheVirtualHost" - Create Apache HTTP/HTTPS virtual host config file (subdomain-domain-tld.conf) in /etc/apache2/sites-available/. Create symlink from config file to /etc/apache2/sites-enabled/.
+	"RemoveApacheVirtualHost" - Remove symlink from /etc/apache2/sites-enabled/. Remove Apache HTTP/HTTPS virtual host config file (subdomain-domain-tld.conf) from /etc/apache2/sites-available/.
+	"EnableApacheVirtualHost" - Create symlink from config file to /etc/apache2/sites-enabled/.
+	"DisableApacheVirtualHost" - Remove symlink from config file to /etc/apache2/sites-enabled/.
+	"CreateApacheVirtualHostProxy" - Create proxy config file in /etc/apache2/site-proxies/subsomain.domain.tld.d/.
+	"RemoveApacheVirtualHostProxy" - Remove proxy config file in /etc/apache2/site-proxies/subsomain.domain.tld.d/.
+	"AddSSLCertificate" - Adds SSL certificate to site configuration.
+	"RemoveSSLCertificate" - Removes SSL certificate from site configuration.
+	"AddCORSAllow"
+	"RemoveCORSAllow"
+	* Apache virtual host config file points to ~/htdocs folder. (/etc/apache2/sites-available/subdomain.domain.tld.conf -> /home/subdomain.domain.tld/htdocs) 
+	* Apache virtual host config file includes /etc/apache2/site-proxies/subdomain.domain.tld.d/ subdir files.
+	* Apache virtual host config file logs to /home/subdomain.domain.tld/log/. (access_log, error_log)
+
+NginXVirtualHostService - Dependent on VirtualHostAccountService
+
+TomcatVirtualHostService - Dependent on VirtualHostAccountService
+	"CreateTomcatVirtualHost" - Create Apache Tomcat virtual host config file(s) in /etc/tomcat6/Catalina/subdomain.domain.tld/. (ROOT.xml, docs.xml, manager.xml, examples.xml)  Add Host entry to /etc/tomcat6/server.xml.
+	"RemoveTomcatVirtualHost" - Remove Host entry from /etc/tomcat6/server.xml. Remove Apache Tomcat virtual host config file(s) from /etc/tomcat6/Catalina/subdomain.domain.tld/. (ROOT.xml, docs.xml, manager.xml, examples.xml)
+	"EnableTomcatVirtualHost" - Add Host entry to /etc/tomcat6/server.xml.
+	"DisableTomcatVirtualHost" - Remove Host entry from /etc/tomcat6/server.xml.
+	* Host - appBase="/home/subdomain.domain.tld/webapps"
+	* Host Valve org.apache.catalina.valves.AccessLogValve - dir="/home/subdomain.domain.tld/log" and prefix="subdomain.domain.tld-access_log" 
+
+PostfixDovecotVirtualHostService
+	"CreatePostfixDovecotVirtualHost" - Create Dovecot virtual host dir /vmail/subdomain.domain.tld. Create /etc/postfix/virtual_domains entry.
+	"RemovePostfixDovecotVirtualHost" - Remove /etc/postfix/virtual_domains entry. Remove Dovecot virtual host dir /vmail/subdomain.domain.tld.
+	"EnablePostfixDovecotVirtualHost" - Create /etc/postfix/virtual_domains entry.
+	"DisablePostfixDovecotVirtualHost" - Remove /etc/postfix/virtual_domains entry.
+	"CreatePostfixDovecotVirtualHostRelay" - Create /etc/postfix/relay_domains_map entry.
+	"RemovePostfixDovecotVirtualHostRelay" - Remove /etc/postfix/relay_domains_map entry
+	* Postfix configured to utilize /etc/postfix/virtual_domains file.
+	* Postfix configured to utilize /etc/postfix/relay_domains_map.
+
+EximDovecotVirtualHostService
+
+MailDomainService - Dependent on PostfixDovecotVirtualHostService
+	"CreateVirtualMailbox" - Create mailbox /vmail/subdomain.domain.tld/user/Maildir.  Create /etc/dovecot/passwd entry.
+	"RemoveVirtualMailbox" - Remove mailbox /vmail/subdomain.domain.tld/user/Maildir.  Remove /etc/dovecot/passwd entry.
+	"EnableVirtualMailbox" - Enable access to Dovecot virtual mailbox.
+	"DisableVirtualMailbox" - Disable access from Dovecot virtual mailbox.
+	"SetVirtualMailboxPasswd" - Set Dovecot virtual mailbox password. /etc/dovecot/passwd
+	"CreateVirtualMailAlias" - Create Postfix virtual domain mail alias. (Mailbox Server)
+	"RemoveVirtualMailAlias" - Remove Postfix virtual domain mail alias. (Mailbox Server)
+	"CreateRelayRecipient" - Create Postfix /etc/postfix/relay_recipients_map entry. (Non mailbox MX servers)
+	"RemoveRelayRecipient" - Remove Postfix /etc/postfix/relay_recipient_map entry. (Non mailbox MX servers)
+	* Dovecot configured to utilize /vmail/subdomain.domain.tld as mailbox location.
+	* Dovecot configured to utilize email user as mailbox name
+	* Needs to differentiate if/when using Exim
+
+PostgresDatabaseService
+	"CreatePostgresDatabase" - Create Postgres Database with GRANT options.
+	"RemovePostgresDatabase" - Remove Postgres database.
+	"EnablePostgresDatabase" - Enable Postgres database.
+	"DisablePostgresDatabase" - Disable Postgres database.
+	"SetPostgresDatabasePasswd" - Set the Postgres admin user password.
+	"BackupPostgresDatabase" - Backup Postgres database
+	"RestorePostgresDatabase" - Restore PostgresDatabase
+
+MysqlDatabaseService
+	"CreateMySQLDatabase" - Create MySQL database with GRANT option.
+	"RemoveMySQLDatabase" - Remove MySQL database.
+	"EnableMySQLDatabase" - Enable MySQL Database.
+	"DisableMySQLDatabase" - Disable MySQL Database.
+	"SetMySQLDatabasePasswd" Set the MySQL admin user password.
+	"BackupMySQLDatabase" - Backup MySQL database.
+	"RestoreMySQLDatabase" - RestoreMySQL database.
+
+RoundcubeWebmailService - Dependent on ApacheVirtualHostService
+	"InstallRoundcubeWebmail"
+	"UninstallRoundcubeWebmail"
+	"EnableRoundcubeWebmail"
+	"DisableRoundcubeWebmail"
+	
+WordpressService
+	"InstallWordpress"
+	"UninstallWordpress"
+	"EnableWordpress"
+	"DisableWordpress"
+	
+JoomlaService
+	"InstallJoomla"
+	"UninstallJoomla"
+	"EnableJoomla"
+	"DisableJoomla"
+
+StompRegistration
+	"Register" - Register STOMP queue with UserName for messaging.
+	"Unregister" - Unregister STOMP queue.
+	"SendPeerList" - Send a list of registered UserName and STOMP queue's that accept messages.
+	"UserMessage" - Send a message to a STOMP queue from a Registered User.
+	"MissingMethod" - Catch the missing method for future development.
+
+
+
+</body>
+</html>
