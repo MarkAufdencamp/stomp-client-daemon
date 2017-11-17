@@ -1,0 +1,1 @@
+{"msgSrvrPort": 61613, "msgSrvr": "dev-msg-broker.tiwaz.cloud", "msgSrvrQueue": "/queue/dev-cntlr-srvr.tiwaz.cloud", "msgSrvrClientId": "dev-cntlr-srvr.tiwaz.cloud"}
