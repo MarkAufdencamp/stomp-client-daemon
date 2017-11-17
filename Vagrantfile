@@ -7,7 +7,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	
 	config.vm.define :dev_agnt_srvr do |dev_agnt_srvr|
 	    dev_agnt_srvr.vm.box = "ubuntu/trusty64"
-	    dev_agnt_srvr.vm.network "private_network", ip: "192.168.60.102"
+	    dev_agnt_srvr.vm.network "private_network", ip: "192.168.60.103"
 	    dev_agnt_srvr.vm.hostname = "dev-agnt-srvr.tiwaz.cloud"
 	
 	    dev_agnt_srvr.vm.synced_folder ".", "/vagrant", id: "vagrant-root",
