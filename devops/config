@@ -1,0 +1,5 @@
+# variables
+DBNAME=host_mgmt_dev
+DBTESTNAME=host_mgmt_test
+DBUSER=host_mgmt
+DBPASSWD=password
