@@ -107,10 +107,10 @@ echo "------------ Install pyenv-virtualenv ------------------------------------
 sudo su - stompclientd -c 'git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv'
 sudo su - stompclientd -c "echo 'eval \"\$(pyenv virtualenv-init -)\"' >> ~/.bash_profile"
 
-echo "------------ Install python 3.3.2 -----------------------------------------"
-sudo su - stompclientd -c "cd /opt/stomp-client-daemon && pyenv install 3.3.2"
+echo "------------ Install python 3.6.3 -----------------------------------------"
+sudo su - stompclientd -c "cd /opt/stomp-client-daemon && pyenv install 3.6.3"
 sudo su - stompclientd -c "cd /opt/stomp-client-daemon && pyenv rehash"
-sudo su - stompclientd -c "cd /opt/stomp-client-daemon && pyenv local 3.3.2"
+sudo su - stompclientd -c "cd /opt/stomp-client-daemon && pyenv local 3.6.3"
 
 echo "------------ Stomp Client Daemon pyenv/pip install------------------------------------------------------"
 sudo su - stompclientd -c "cd /opt/stomp-client-daemon && pyenv virtualenv stompclientd"
